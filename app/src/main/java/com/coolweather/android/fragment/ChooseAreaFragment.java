@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.coolweather.android.MainActivity;
 import com.coolweather.android.R;
+import com.coolweather.android.activity.WeatherActivity;
 import com.coolweather.android.db.City;
 import com.coolweather.android.db.County;
 import com.coolweather.android.db.Province;
@@ -91,7 +92,8 @@ public class ChooseAreaFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable
+            Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.choose_area, container, false);
         titleText = (TextView) view.findViewById(R.id.title_text);
         backButton = (Button) view.findViewById(R.id.back_button);
@@ -114,18 +116,18 @@ public class ChooseAreaFragment extends Fragment {
                     selectedCity = cityList.get(position);
                     queryCounties();
                 } else if (currentLevel == LEVEL_COUNTY) {
-//                    String weatherId = countyList.get(position).getWeatherId();
-//                    if (getActivity() instanceof MainActivity) {
-//                        Intent intent = new Intent(getActivity(), WeatherActivity.class);
-//                        intent.putExtra("weather_id", weatherId);
-//                        startActivity(intent);
-//                        getActivity().finish();
-//                    } else if (getActivity() instanceof WeatherActivity) {
-//                        WeatherActivity activity = (WeatherActivity) getActivity();
-//                        activity.drawerLayout.closeDrawers();
-//                        activity.swipeRefresh.setRefreshing(true);
-//                        activity.requestWeather(weatherId);
-//                    }
+                    String weatherId = countyList.get(position).getWeatherId();
+                    if (getActivity() instanceof MainActivity) {
+                        Intent intent = new Intent(getActivity(), WeatherActivity.class);
+                        intent.putExtra("weather_id", weatherId);
+                        startActivity(intent);
+                        getActivity().finish();
+                    } else if (getActivity() instanceof WeatherActivity) {
+                        WeatherActivity activity = (WeatherActivity) getActivity();
+                        activity.drawerLayout.closeDrawers();
+                        activity.swipeRefresh.setRefreshing(true);
+                        activity.requestWeather(weatherId);
+                    }
                 }
             }
         });
@@ -169,7 +171,8 @@ public class ChooseAreaFragment extends Fragment {
     private void queryCities() {
         titleText.setText(selectedProvince.getProvinceName());
         backButton.setVisibility(View.VISIBLE);
-        cityList = DataSupport.where("provinceid = ?", String.valueOf(selectedProvince.getId())).find(City.class);
+        cityList = DataSupport.where("provinceid = ?", String.valueOf(selectedProvince.getId()))
+                .find(City.class);
         if (cityList.size() > 0) {
             dataList.clear();
             for (City city : cityList) {
@@ -191,7 +194,8 @@ public class ChooseAreaFragment extends Fragment {
     private void queryCounties() {
         titleText.setText(selectedCity.getCityName());
         backButton.setVisibility(View.VISIBLE);
-        countyList = DataSupport.where("cityid = ?", String.valueOf(selectedCity.getId())).find(County.class);
+        countyList = DataSupport.where("cityid = ?", String.valueOf(selectedCity.getId())).find
+                (County.class);
         if (countyList.size() > 0) {
             dataList.clear();
             for (County county : countyList) {
@@ -213,7 +217,7 @@ public class ChooseAreaFragment extends Fragment {
      */
     private void queryFromServer(String address, final String type) {
         showProgressDialog();
-        HttpUtil.sendOkHttprequest(address, new Callback() {
+        HttpUtil.sendOkHttpRequest(address, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 // 通过runOnUiThread()方法回到主线程处理操作
